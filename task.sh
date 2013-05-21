@@ -3,11 +3,11 @@ osascript - title <<END
 	on run argv
 
 		set ListaaMostrar to "Home"
-		set mensaje to "Tranquilo puedes hacerlo."
+		set mensaje to " -- Do it simple ! -- " 
 
-		tell application "Terminal"
+		#tell application "Terminal"
 			# say mensaje # Optional: using voice 
-		end 
+		#end 
 
 		tell application "Reminders"
 			set todoList to name of reminders in list ListaaMostrar whose completed is false
@@ -16,6 +16,7 @@ osascript - title <<END
 				repeat with itemNum from 1 to (count of (reminders in list ListaaMostrar whose completed is false))
 					set output to output & "- " & (item itemNum of todoList) & "\n"
 				end repeat
+				set output to output & "\nRemember make your miniplan, put in calendar completed event."
 			else 
 				set output to "No hay pendientes registrados"
 			end

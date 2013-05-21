@@ -1,14 +1,24 @@
 task
 ----
 
-This project connect with your Reminders App. With that so you can see your task in the terminal you have to change add chmod +x to task-list.sh and for task.sh to use it:
+This project connect with your Reminders App. With that so you can see your reminders in the terminal.
 
-	$ ./task-list.sh 
+For installation download taskcmd.sh and task.sh and in terminal apply:
 
-or 
+	$ chmod +x task.sh
+	$ chmod +x taskcmd.sh
+
+After that you can use:
+
+	$ ./taskcmd.sh 
+
+or ...
 
 	$ ./task.sh 
 
-The last option call a "Home" list you can customize in this file editing with a text editor
+The last option will call to "Home" list, you can customize this, in the file editing with a text editor.
+
+You can edit ~/.bash_profile or make a link to use it in any folder in terminal.
+
 
 I hope this will help you.
