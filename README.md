@@ -6,19 +6,29 @@ This project connect with your Reminders App. With that so you can see your remi
 For installation download taskcmd.sh and task.sh and in terminal apply:
 
 	$ chmod +x task.sh
-	$ chmod +x taskcmd.sh
 
 After that you can use:
 
-	$ ./taskcmd.sh 
+	$ ./task.sh  namelist command
 
-or ...
+The last argument can be:
+- list 
+- new
+- completetask 
 
-	$ ./task.sh 
+###list
 
-The last option will call to "Home" list, you can customize this, in the file editing with a text editor.
+This command show you the tasks of a list.
 
-You can edit ~/.bash_profile or make a link to use it in any folder in terminal.
+###new 
+
+This command will make a new task in the list that you specify.
+
+###completelast
+
+This command will mark the last item of your list as done.
+
+
 
 
 I hope this will help you.
