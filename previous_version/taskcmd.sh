@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-osascript - $1 $2 $3 <<END
 on run argv
 	set lista to ""
 	set tarea to ""	
@@ -82,8 +81,8 @@ on run argv
 		set output to salida & "\n\n" & mensaje & "\n"
 	end 
 
+
 end
-END
 
 # Referencias
 # http://www.macosxtips.co.uk/geeklets/productivity/mountain-lion-reminders-list/

@@ -3,7 +3,7 @@ task
 
 This project connect with your Reminders App. With that so you can see your reminders in the terminal.
 
-For installation download taskcmd.sh and task.sh and in terminal apply:
+For installation download task.sh and in terminal apply:
 
 	$ chmod +x task.sh
 
