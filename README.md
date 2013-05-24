@@ -9,26 +9,43 @@ For installation download task.sh and in terminal apply:
 
 After that you can use:
 
-	$ ./task.sh  namelist command
+	$ ./task.sh [command] [name of list]
 
-The last argument can be:
+The command can be:
 - list 
 - new
-- completetask 
+- all
+- cals
+- completelast
+- completelastcal
 
-###list
+####list
 
 This command show you the tasks of a list.
 
-###new 
+####new 
 
 This command will make a new task in the list that you specify.
 
-###completelast
+####all
 
-This command will mark the last item of your list as done.
+This command will show you all your list that you have in reminders.
 
+####cals
 
+This command will show you all your calendars that you have registered in app Calendar.
+
+####completelast
+
+This command will mark as done the last item of the list that you specified.
+
+####completelastcal
+
+Similar that before command, but, this command besides will add the task in the calendar with the same
+DESCRIPTION of the list that you specified.
 
 
 I hope this will help you.
+
+
+NOTE: Sorry for my English if you have suggestions I will appreciate thank you.

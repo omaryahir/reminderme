@@ -86,7 +86,7 @@ on run argv
 			repeat with calNum from 1 to (count of calendars)
 				set calendario to item calNum of calendars
 				tell calendario
-					set salida to salida & "[" & name & "] ID: " & id & " \n"
+					set salida to salida & "DESC: [" & description & "] NAME: " & name & "\n"
 				end tell
 			end repeat
 
@@ -101,7 +101,7 @@ on run argv
 			tell list ListaaMostrar
 				set recordatorio to last reminder whose completed is false
 				copy name of recordatorio to tarea 
-	#			set completed of recordatorio to true
+				set completed of recordatorio to true
 			
 				set tarea to "[" & ListaaMostrar & "] " & tarea 	
 				set salida to "\n" & tarea & " ✔  \n"
@@ -113,36 +113,16 @@ on run argv
 
 			tell application "Calendar"
 	
-				set idCalendario to (first calendar whose title is lista)
+				set idCalendario to (first calendar whose description is lista)
 				set idEvento to make new event at end of events of idCalendario
-				tell idCalendario 
-					set salida to salida & " Calendario:" & name	
-				end tell
 	
 				tell idEvento
 					set summary to tarea
 					set allday event to true
 				end tell
-	#
-				#set salida to salida & " Sync to calendar"
-	#
-				#(*
-				##Lista de Calendarios
-				##set salida to salida & " calendars count: " & (count of calendars)
-				#repeat with itemNum from 1 to (count of calendars)
-					#set calendario to item itemNum of calendars
-					#tell calendario 
-						##set salida to salida & name & "\n" #Lista de calendarios
-						#if name is ListaaMostrar then
-							#make new event with properties {summary:tarea, allday event:true}
-							#set salida to salida & " Sync to calendar: " & name & "\n\n"
-							#exit repeat
-						#end if 
-					#end tell
-				#end repeat
-				#
-				##tell application "System Events" to keystroke "R" using command down
-#
+	
+				set salida to salida & " -- synced to calendar"
+	
 			end tell
 
 		end if
@@ -165,4 +145,5 @@ END
 # Referencias
 # http://www.macosxtips.co.uk/geeklets/productivity/mountain-lion-reminders-list/
 # http://apple.stackexchange.com/questions/66981/how-can-i-add-reminders-via-the-command-line
+# http://www.mactech.com/articles/mactech/Vol.21/21.11/ScriptingiCal/index.html
 # http://www.mactech.com/articles/mactech/Vol.21/21.11/ScriptingiCal/index.html
