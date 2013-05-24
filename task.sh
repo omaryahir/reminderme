@@ -1,5 +1,20 @@
 #!/usr/bin/env bash
 osascript - $1 $2 $3 <<END
+
+on date_time_to_iso(dt)
+	set {year:y, month:m, day:d, hours:h, minutes:min, seconds:s} to dt
+	set y to text 2 through -1 of ((y + 10000) as text)
+	set m to text 2 through -1 of ((m + 100) as text)
+	set d to text 2 through -1 of ((d + 100) as text)
+	set h to text 2 through -1 of ((h + 100) as text)
+	set min to text 2 through -1 of ((min + 100) as text)
+	set s to text 2 through -1 of ((s + 100) as text)
+	#return y & "-" & m & "-" & d & "T" & h & ":" & min & ":" & s
+	#set day_abbr to (text 1 thru 3 of ((weekday of dt) as string)) 
+	return  d & "-" & m & "-" & y & " " & h & ":" & min
+end date_time_to_iso
+
+
 on run argv
 	
 	set lineacomando to "$ task [command:'list','new','completelast'] [namelist] "
@@ -14,6 +29,7 @@ on run argv
 	set cmdCALS to "cals"
 	set cmdCOMPLETELAST to "completelast"
 	set cmdCOMPLETELASTCAL to "completelastcal"
+	set cmdNEXT to "next"
 	
 	set dato to ""	
 	set cmdCAL to "cal"
@@ -50,6 +66,7 @@ on run argv
 
 		end tell
 
+
 	else if comando is equal to cmdNEW then
 
 		tell application "Terminal"
@@ -82,9 +99,9 @@ on run argv
 	else if comando is equal to cmdCALS then
 
 		tell application "Calendar" 
-			
-			repeat with calNum from 1 to (count of calendars)
-				set calendario to item calNum of calendars
+			set Calendarios to calendars #whose description is not ""
+			repeat with calNum from 1 to (count of Calendarios)
+				set calendario to item calNum of Calendarios
 				tell calendario
 					set salida to salida & "DESC: [" & description & "] NAME: " & name & "\n"
 				end tell
@@ -127,6 +144,65 @@ on run argv
 
 		end if
 	
+	else if comando is equal to cmdNEXT then
+
+
+		set {year:y, month:m, day:d} to current date
+		set str to (d as string) & " " & (m as string) & " " & (y as string)
+		set inicio to date str
+		set fin to inicio + 60 * 60 * 24 * lista
+		set salida to salida & "\n --- Next " & lista & " day's --- \n"	
+		#set salida to salida & inicio
+
+		set eventos_nombre_calendarios to {}
+		set eventos_resumen to {}
+		set eventos_fechai to {}
+		set eventos_fechaf to {}
+		set eventos_todoeldia to {}
+
+		tell application "Calendar"
+			set Calendarios to calendars #whose description is not ""
+			repeat with calNum from 1 to (count of Calendarios)
+				set calendario to item calNum of Calendarios
+				tell calendario
+					set nombre_calendario to name 
+					 
+        			repeat with evento in every event whose ((start date <= fin) and (end date >= inicio))
+  
+						tell evento
+							set todoeldia to ""	
+							if allday event then 
+								set todoeldia to " -- allday"
+							end if
+							
+							set end of eventos_nombre_calendarios to nombre_calendario
+							set end of eventos_resumen to summary
+							set end of eventos_fechai to start date
+							set end of eventos_fechaf to end date
+							set end of eventos_todoeldia to todoeldia
+
+						end tell
+
+					end repeat
+				end tell
+			end repeat
+		end tell
+
+		repeat with eNum from 1 to (count of eventos_resumen)	
+			set salida to salida & "\n"
+
+			set salida to salida & " " & date_time_to_iso(item eNum of eventos_fechai)
+			set salida to salida & " >" 
+			set salida to salida & " " & date_time_to_iso(item eNum of eventos_fechaf)
+
+			set salida to salida & "\t"
+
+			set salida to salida & " [" & item eNum of eventos_nombre_calendarios & "]"
+			set salida to salida & " " & item eNum of eventos_resumen 
+			set salida to salida & " " & item eNum of eventos_todoeldia 
+		end repeat
+
+
 	else 
 
 		set salida to "Use me in this way:\n\n" & lineacomando

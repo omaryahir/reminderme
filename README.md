@@ -18,6 +18,7 @@ The command can be:
 - cals
 - completelast
 - completelastcal
+- next
 
 ####list
 
@@ -43,6 +44,15 @@ This command will mark as done the last item of the list that you specified.
 
 Similar that before command, but, this command besides will add the task in the calendar with the same
 DESCRIPTION of the list that you specified.
+
+####next
+
+This command will show you the next events in the days specified example:
+
+$./task.sh next 10
+
+In this form will show you the next 10 events in all your calendars.
+
 
 
 I hope this will help you.
