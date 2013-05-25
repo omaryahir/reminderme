@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-osascript - $1 $2 $3 <<END
+osascript - $1 $2 $3 $4<<END
 
+
+# Formatting dates
 on date_time_to_iso(dt)
 	set {year:y, month:m, day:d, hours:h, minutes:min, seconds:s} to dt
 	set y to text 2 through -1 of ((y + 10000) as text)
@@ -13,6 +15,30 @@ on date_time_to_iso(dt)
 	#set day_abbr to (text 1 thru 3 of ((weekday of dt) as string)) 
 	return  d & "-" & m & "-" & y & " " & h & ":" & min
 end date_time_to_iso
+
+# Order Lists
+on simple_sort(my_list)
+ set the index_list to {}
+ set the sorted_list to {}
+ repeat (the number of items in my_list) times
+ set the low_item to ""
+ repeat with i from 1 to (number of items in my_list)
+ if i is not in the index_list then
+ set this_item to item i of my_list as text
+ if the low_item is "" then
+ set the low_item to this_item
+ set the low_item_index to i
+ else if this_item comes before the low_item then
+ set the low_item to this_item
+ set the low_item_index to i
+ end if
+ end if
+ end repeat
+ set the end of sorted_list to the low_item
+ set the end of the index_list to the low_item_index
+ end repeat
+ return the sorted_list
+end simple_sort
 
 
 on run argv
@@ -42,6 +68,10 @@ on run argv
 		set lista to item 2 of argv
 	end if 
 
+	if (count argv) >= 3 then 
+		set dato to item 3 of argv
+	end if	
+
 
 	set mensaje to " -- Do it Simple ! -- "
 	set salida to "" 
@@ -53,12 +83,21 @@ on run argv
 		
 		tell application "Reminders"
 			
-			set ListaaMostrar to lista
-			set todoList to name of reminders in list ListaaMostrar whose completed is false
 			set salida to "\n"
-			if (count of (reminders in list ListaaMostrar whose completed is false)) > 0 then
-				repeat with itemNum from 1 to (count of (reminders in list ListaaMostrar whose completed is false))
-					set salida to salida & "[" & lista & "] " & (item itemNum of todoList) & "\n"
+				
+			set ListaaMostrar to lista
+			set listReminders to ""
+			if dato is not "" then
+				set listReminders to reminders in list ListaaMostrar whose completed is false and name contains dato
+			else 
+				set listReminders to reminders in list ListaaMostrar whose completed is false
+			end if
+
+			if (count of listReminders) > 0 then
+				repeat with itemNum from 1 to (count of listReminders)
+					tell item itemNum of listReminders 
+						set salida to salida & "[" & ListaaMostrar & "] " & name & "\n"
+					end tell
 				end repeat
 			else 
 				set salida to "No hay pendientes registrados"
@@ -86,15 +125,34 @@ on run argv
 		end tell
 
 	else if comando is equal to cmdALL then
-	
+
+		set listadetareas to {}
+
 		tell application "Reminders"
 			repeat with listNum from 1 to (count of lists)
-				set idLista to (list listNum)
-				tell idLista
-					set salida to salida & "\n[" & name & "]"
-				end tell
+				set nombre_lista to (name of (list listNum))
+				#tell idLista
+					#set salida to salida & "\n[" & name & "]A
+				#end tell
+				set listTareas to "" 
+				if lista is not "" then
+					set listTareas to reminders in list nombre_lista whose completed is false and name contains lista
+				else 
+					set listTareas to reminders in list nombre_lista whose completed is false
+				end if
+				repeat with tarea in listTareas
+					tell tarea
+						set end of listadetareas to name & " / " & nombre_lista & ""  
+						#set salida to salida & "\n[" & nombre_lista & "] " & name 
+					end tell
+				end repeat
 			end repeat
 		end tell
+
+		set listadetareas to simple_sort(listadetareas)	
+		repeat with tarea in listadetareas
+			set salida to salida & "\n" & tarea
+		end repeat
 
 	else if comando is equal to cmdCALS then
 
@@ -212,7 +270,7 @@ on run argv
 
 
 	tell application "Terminal"
-		set output to salida & "\n" #& "\n\n" & mensaje & "\n"
+		set output to salida & "\n" & "\n\n" & mensaje & "\n"
 	end tell 
 
 end
