@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-osascript - $1 $2 $3 $4<<END
+osascript - $1 $2 $3 $4 $5 <<END
 
 
 # Formatting dates
@@ -50,14 +50,21 @@ on run argv
 
 	set comando to ""
 	set cmdLIST to "list"
+	set cmdLISTS to "lists"
 	set cmdNEW to "new"
 	set cmdALL to "all"
 	set cmdCALS to "cals"
 	set cmdCOMPLETELAST to "completelast"
 	set cmdCOMPLETELASTCAL to "completelastcal"
+	set cmdCOMPLETE to "complete"
+	set cmdCOMPLETECAL to "completecal"
 	set cmdNEXT to "next"
-	
+	set cmdNOTE to "note" 
+	set cmdSET to "set"
+		
 	set dato to ""	
+	set dato2 to ""
+	set dato3 to ""
 	set cmdCAL to "cal"
 
 	if (count argv) >= 1 then
@@ -72,9 +79,17 @@ on run argv
 		set dato to item 3 of argv
 	end if	
 
+	if (count argv) >= 4 then
+		set dato2 to item 4 of argv
+	end if
 
-	set mensaje to " -- Do it Simple ! -- "
-	set salida to "" 
+	if (count argv) >= 5 then 
+		set dato3 to item 5 of argv
+	end if
+
+
+	set mensaje to "   Do it Simple !  " & current date & " "
+	set salida to ""
 
 
 
@@ -96,13 +111,26 @@ on run argv
 			if (count of listReminders) > 0 then
 				repeat with itemNum from 1 to (count of listReminders)
 					tell item itemNum of listReminders 
-						set salida to salida & "[" & ListaaMostrar & "] " & name & "\n"
+						set salida to salida & itemNum & ": [" & ListaaMostrar & "] " & name
+						if body is not missing value then
+							set salida to salida & " --" & body
+						end if
+						set salida to salida & "\n"
 					end tell
 				end repeat
 			else 
 				set salida to "No hay pendientes registrados"
 			end if
 
+		end tell
+
+	else if comando is equal to cmdLISTS then
+
+		tell application "Reminders"
+			repeat with listNum from 1 to (count of lists)
+				set nombre_lista to (name of (list listNum))
+				set salida to salida & "[" & nombre_lista & "]\n"	
+			end repeat
 		end tell
 
 
@@ -131,9 +159,6 @@ on run argv
 		tell application "Reminders"
 			repeat with listNum from 1 to (count of lists)
 				set nombre_lista to (name of (list listNum))
-				#tell idLista
-					#set salida to salida & "\n[" & name & "]A
-				#end tell
 				set listTareas to "" 
 				if lista is not "" then
 					set listTareas to reminders in list nombre_lista whose completed is false and name contains lista
@@ -142,8 +167,7 @@ on run argv
 				end if
 				repeat with tarea in listTareas
 					tell tarea
-						set end of listadetareas to name & " / " & nombre_lista & ""  
-						#set salida to salida & "\n[" & nombre_lista & "] " & name 
+						set end of listadetareas to name & " [" & nombre_lista & "]"  
 					end tell
 				end repeat
 			end repeat
@@ -201,7 +225,57 @@ on run argv
 			end tell
 
 		end if
+
+	else if comando contains cmdCOMPLETE then 
 	
+		set listadetareas to {}
+		set listadetareaslista to {}
+
+		tell application "Reminders"
+			repeat with listNum from 1 to (count of lists)
+				set nombre_lista to (name of (list listNum))
+				set listTareas to "" 
+				if lista is not "" then
+					set listTareas to reminders in list nombre_lista whose completed is false and name contains lista
+				else 
+					set listTareas to reminders in list nombre_lista whose completed is false
+				end if
+				repeat with tarea in listTareas
+					tell tarea
+						set completed to true
+
+						set end of listadetareas to name 
+						set end of listadetareaslista to nombre_lista
+
+					end tell
+				end repeat
+			end repeat
+		end tell
+
+		repeat with itemNum from 1 to (count of listadetareas)
+			set nombre_tarea to (item itemNum of listadetareas)
+			set nombre_lista to (item itemNum of listadetareaslista)
+		
+			set tarea_linea to "[" & nombre_lista & "] " & nombre_tarea
+			set salida to salida & "\n" & tarea_linea & " ✔  \n"
+
+			if comando is equal to cmdCOMPLETECAL then 
+				tell application "Calendar"
+
+					set idCalendario to (first calendar whose description is nombre_lista)
+					set idEvento to make new event at end of events of idCalendario
+					tell idEvento
+						set summary to tarea_linea
+						set allday event to true
+					end tell
+				
+					set salida to salida & "   -- synced to calendar\n"
+				end tell
+			end if
+			
+		end repeat
+	
+
 	else if comando is equal to cmdNEXT then
 
 
@@ -260,17 +334,83 @@ on run argv
 			set salida to salida & " " & item eNum of eventos_todoeldia 
 		end repeat
 
+	else if comando is equal to cmdNOTE then
+
+		set listadetareas to {}
+
+		tell application "Reminders"
+			repeat with listNum from 1 to (count of lists)
+				set nombre_lista to (name of (list listNum))
+				#tell idLista
+					#set salida to salida & "\n[" & name & "]A
+				#end tell
+				set listTareas to "" 
+				if lista is not "" then
+					set listTareas to reminders in list nombre_lista whose completed is false and body contains lista
+				else 
+					set listTareas to reminders in list nombre_lista whose completed is false
+				end if
+				repeat with tarea in listTareas
+					tell tarea
+						set end of listadetareas to body & "\t[" & nombre_lista & "]\t\t" & name
+					end tell
+				end repeat
+			end repeat
+		end tell
+
+		set listadetareas to simple_sort(listadetareas)	
+		repeat with tarea in listadetareas
+			set salida to salida & "\n" & tarea
+		end repeat
+
+	else if comando is equal to cmdSET then
+
+		tell application "Reminders"
+			
+			set ListaaMostrar to lista
+			set listReminders to ""
+			set listReminders to reminders in list ListaaMostrar whose completed is false
+
+			if (count of listReminders) > 0 then
+				set numeroTarea to 0
+				repeat with itemNum from 1 to (count of listReminders)
+					set numeroTarea to (numeroTarea + 1)
+					#set salida to salida & numeroTarea & "=" & dato	& ":" & (numeroTarea as string is equal to dato) & " "
+					if numeroTarea as string is equal to dato then 
+						tell item itemNum of listReminders 
+
+							if dato2 is equal to "body" or dato2 is equal to "note" then 
+								set body to dato3
+							end if 
+							
+							if dato2 is equal to "name" then 
+								set name to dato3
+							end if
+
+
+							set salida to salida & itemNum & ": [" & ListaaMostrar & "] " & name
+							set salida to salida & " --applied: " & dato2 & "=" & body
+						end tell
+						exit repeat
+					end if
+
+				end repeat
+			else 
+				set salida to salida & "No hay pendientes registrados"
+			end if
+
+		end tell
 
 	else 
 
-		set salida to "Use me in this way:\n\n" & lineacomando
+		set salida to "Command: " & comando & " not found, use me in this way:\n\n" & lineacomando
 	
 	end if 
 			
 
 
 	tell application "Terminal"
-		set output to salida & "\n" & "\n\n" & mensaje & "\n"
+		set output to salida & "\n" & mensaje & "\n"
 	end tell 
 
 end
