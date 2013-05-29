@@ -14,7 +14,7 @@ After that you can use:
 
 Commands:
 
-####lists
+####all
 
 	$ ./task.sh all
 
