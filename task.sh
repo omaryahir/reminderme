@@ -2,6 +2,8 @@
 osascript - $1 $2 $3 $4 $5 <<END
 
 
+# FUNCTIONS ####################################################################
+
 # Formatting dates
 on date_time_to_iso(dt)
 	set {year:y, month:m, day:d, hours:h, minutes:min, seconds:s} to dt
@@ -41,91 +43,47 @@ on simple_sort(my_list)
 end simple_sort
 
 
+on flista(nombre_lista)
+
+	tell application "Reminders"
+			
+		set salida to "\n"	
+		set listReminders to ""
+		set listReminders to reminders in list nombre_lista whose completed is false
+
+		if (count of listReminders) > 0 then
+			repeat with itemNum from 1 to (count of listReminders)
+				tell item itemNum of listReminders 
+					set salida to salida & itemNum & ": " & name & "\n"
+				end tell
+			end repeat
+		else 
+			set salida to "No hay pendientes registrados"
+		end if
+
+	end tell
+
+	return (salida & "\nDo it Simple !  " & current date & "\n")
+
+end flista
+
+
+
+
+
+
+# MAIN ##############################################################################
+
 on run argv
-	
-	set lineacomando to "$ task [command:'list','new','completelast'] [namelist] "
-	
-	set lista to ""
-	set tarea to ""	
 
-	set comando to ""
-	set cmdLIST to "list"
-	set cmdLISTS to "lists"
-	set cmdNEW to "new"
-	set cmdALL to "all"
-	set cmdCALS to "cals"
-	set cmdCOMPLETELAST to "completelast"
-	set cmdCOMPLETELASTCAL to "completelastcal"
-	set cmdCOMPLETE to "complete"
-	set cmdCOMPLETECAL to "completecal"
-	set cmdNEXT to "next"
-	set cmdNOTE to "note" 
-	set cmdSET to "set"
-		
-	set dato to ""	
-	set dato2 to ""
-	set dato3 to ""
-	set cmdCAL to "cal"
-
-	if (count argv) >= 1 then
-		set comando to item 1 of argv
-	end if
-
-	if (count argv) >= 2 then 
-		set lista to item 2 of argv
-	end if 
-
-	if (count argv) >= 3 then 
-		set dato to item 3 of argv
-	end if	
-
-	if (count argv) >= 4 then
-		set dato2 to item 4 of argv
-	end if
-
-	if (count argv) >= 5 then 
-		set dato3 to item 5 of argv
-	end if
-
-
-	set mensaje to "   Do it Simple !  " & current date & " "
+	# GLOBALS   #####################################################################
 	set salida to ""
 
 
 
+	# COMMAND: ALL ##################################################################
 
-	if comando is equal to cmdLIST then
-		
-		tell application "Reminders"
-			
-			set salida to "\n"
-				
-			set ListaaMostrar to lista
-			set listReminders to ""
-			if dato is not "" then
-				set listReminders to reminders in list ListaaMostrar whose completed is false and name contains dato
-			else 
-				set listReminders to reminders in list ListaaMostrar whose completed is false
-			end if
-
-			if (count of listReminders) > 0 then
-				repeat with itemNum from 1 to (count of listReminders)
-					tell item itemNum of listReminders 
-						set salida to salida & itemNum & ": [" & ListaaMostrar & "] " & name
-						if body is not missing value then
-							set salida to salida & " --" & body
-						end if
-						set salida to salida & "\n"
-					end tell
-				end repeat
-			else 
-				set salida to "No hay pendientes registrados"
-			end if
-
-		end tell
-
-	else if comando is equal to cmdLISTS then
-
+	if (item 1 of argv) is equal to "all" then
 		tell application "Reminders"
 			repeat with listNum from 1 to (count of lists)
 				set nombre_lista to (name of (list listNum))
@@ -134,285 +92,217 @@ on run argv
 		end tell
 
 
-	else if comando is equal to cmdNEW then
 
-		tell application "Terminal"
-			set input to ""
-			display dialog "Nombre de la tarea:" default answer input
- 			set tarea to text returned of result
-		end tell 
+	# COMMAND: LIST #################################################################
+
+	else if (item 2 of argv) is equal to "list" then
+
+		set salida to flista((item 1 of argv))
+
+
+	# COMMAND: NEW #################################################################
+
+	else if (item 2 of argv) is equal to "new" then
+		
+		set nombre_lista to (item 1 of argv)
+
+		set nombre_tarea to ""
+		repeat with argNum from 3 to (count of argv)
+			set nombre_tarea to nombre_tarea & (item argNum of argv) & " "
+		end repeat
 
 		tell application "Reminders"
-			set ListaaMostrar to lista
-			tell list ListaaMostrar
-				if tarea is not equal to "" then				
-					make new reminder with properties {name:tarea}	
-					set salida to "\n[" & ListaaMostrar & "] " & tarea
+			tell list nombre_lista
+				if nombre_tarea is not equal to "" then				
+					make new reminder with properties {name:nombre_tarea}	
+					set salida to "[" & nombre_lista & "] " & nombre_tarea & " << added"
 				end if
 			end tell 
 		end tell
 
-	else if comando is equal to cmdALL then
 
-		set listadetareas to {}
+	# COMMAND: COMPLETE[CAL] ######################################################
 
-		tell application "Reminders"
-			repeat with listNum from 1 to (count of lists)
-				set nombre_lista to (name of (list listNum))
-				set listTareas to "" 
-				if lista is not "" then
-					set listTareas to reminders in list nombre_lista whose completed is false and name contains lista
-				else 
-					set listTareas to reminders in list nombre_lista whose completed is false
-				end if
-				repeat with tarea in listTareas
-					tell tarea
-						set end of listadetareas to name & " [" & nombre_lista & "]"  
-					end tell
-				end repeat
-			end repeat
-		end tell
+	else if (item 2 of argv) contain "complete" then
 
-		set listadetareas to simple_sort(listadetareas)	
-		repeat with tarea in listadetareas
-			set salida to salida & "\n" & tarea
-		end repeat
-
-	else if comando is equal to cmdCALS then
-
-		tell application "Calendar" 
-			set Calendarios to calendars #whose description is not ""
-			repeat with calNum from 1 to (count of Calendarios)
-				set calendario to item calNum of Calendarios
-				tell calendario
-					set salida to salida & "DESC: [" & description & "] NAME: " & name & "\n"
-				end tell
-			end repeat
-
-		end tell		
-
-	else if comando contains cmdCOMPLETELAST then 
+		set nombre_lista to (item 1 of argv)	
+		set num_recordatorio to (item 3 of argv)
+		set nombre_tarea to ""
 
 		tell application "Reminders"
 			
-			set ListaaMostrar to lista		
-			set todoList to name of reminders in list ListaaMostrar whose completed is false
-			tell list ListaaMostrar
-				set recordatorio to last reminder whose completed is false
-				copy name of recordatorio to tarea 
-				set completed of recordatorio to true
-			
-				set tarea to "[" & ListaaMostrar & "] " & tarea 	
-				set salida to "\n" & tarea & " ✔  \n"
-			end tell
-
-		end tell
-
-		if comando is equal to cmdCOMPLETELASTCAL then 
-
-			tell application "Calendar"
-	
-				set idCalendario to (first calendar whose description is lista)
-				set idEvento to make new event at end of events of idCalendario
-	
-				tell idEvento
-					set summary to tarea
-					set allday event to true
-				end tell
-	
-				set salida to salida & " -- synced to calendar"
-	
-			end tell
-
-		end if
-
-	else if comando contains cmdCOMPLETE then 
-	
-		set listadetareas to {}
-		set listadetareaslista to {}
-
-		tell application "Reminders"
-			repeat with listNum from 1 to (count of lists)
-				set nombre_lista to (name of (list listNum))
-				set listTareas to "" 
-				if lista is not "" then
-					set listTareas to reminders in list nombre_lista whose completed is false and name contains lista
-				else 
-					set listTareas to reminders in list nombre_lista whose completed is false
-				end if
-				repeat with tarea in listTareas
-					tell tarea
-						set completed to true
-
-						set end of listadetareas to name 
-						set end of listadetareaslista to nombre_lista
-
-					end tell
-				end repeat
-			end repeat
-		end tell
-
-		repeat with itemNum from 1 to (count of listadetareas)
-			set nombre_tarea to (item itemNum of listadetareas)
-			set nombre_lista to (item itemNum of listadetareaslista)
-		
-			set tarea_linea to "[" & nombre_lista & "] " & nombre_tarea
-			set salida to salida & "\n" & tarea_linea & " ✔  \n"
-
-			if comando is equal to cmdCOMPLETECAL then 
-				tell application "Calendar"
-
-					set idCalendario to (first calendar whose description is nombre_lista)
-					set idEvento to make new event at end of events of idCalendario
-					tell idEvento
-						set summary to tarea_linea
-						set allday event to true
-					end tell
-				
-					set salida to salida & "   -- synced to calendar\n"
-				end tell
-			end if
-			
-		end repeat
-	
-
-	else if comando is equal to cmdNEXT then
-
-
-		set {year:y, month:m, day:d} to current date
-		set str to (d as string) & " " & (m as string) & " " & (y as string)
-		set inicio to date str
-		set fin to inicio + 60 * 60 * 24 * lista
-		set salida to salida & "\n --- Next " & lista & " day's --- \n"	
-		#set salida to salida & inicio
-
-		set eventos_nombre_calendarios to {}
-		set eventos_resumen to {}
-		set eventos_fechai to {}
-		set eventos_fechaf to {}
-		set eventos_todoeldia to {}
-
-		tell application "Calendar"
-			set Calendarios to calendars #whose description is not ""
-			repeat with calNum from 1 to (count of Calendarios)
-				set calendario to item calNum of Calendarios
-				tell calendario
-					set nombre_calendario to name 
-					 
-        			repeat with evento in every event whose ((start date <= fin) and (end date >= inicio))
-  
-						tell evento
-							set todoeldia to ""	
-							if allday event then 
-								set todoeldia to " -- allday"
-							end if
-							
-							set end of eventos_nombre_calendarios to nombre_calendario
-							set end of eventos_resumen to summary
-							set end of eventos_fechai to start date
-							set end of eventos_fechaf to end date
-							set end of eventos_todoeldia to todoeldia
-
-						end tell
-
-					end repeat
-				end tell
-			end repeat
-		end tell
-
-		repeat with eNum from 1 to (count of eventos_resumen)	
-			set salida to salida & "\n"
-
-			set salida to salida & " " & date_time_to_iso(item eNum of eventos_fechai)
-			set salida to salida & " >" 
-			set salida to salida & " " & date_time_to_iso(item eNum of eventos_fechaf)
-
-			set salida to salida & "\t"
-
-			set salida to salida & " [" & item eNum of eventos_nombre_calendarios & "]"
-			set salida to salida & " " & item eNum of eventos_resumen 
-			set salida to salida & " " & item eNum of eventos_todoeldia 
-		end repeat
-
-	else if comando is equal to cmdNOTE then
-
-		set listadetareas to {}
-
-		tell application "Reminders"
-			repeat with listNum from 1 to (count of lists)
-				set nombre_lista to (name of (list listNum))
-				#tell idLista
-					#set salida to salida & "\n[" & name & "]A
-				#end tell
-				set listTareas to "" 
-				if lista is not "" then
-					set listTareas to reminders in list nombre_lista whose completed is false and body contains lista
-				else 
-					set listTareas to reminders in list nombre_lista whose completed is false
-				end if
-				repeat with tarea in listTareas
-					tell tarea
-						set end of listadetareas to body & "\t[" & nombre_lista & "]\t\t" & name
-					end tell
-				end repeat
-			end repeat
-		end tell
-
-		set listadetareas to simple_sort(listadetareas)	
-		repeat with tarea in listadetareas
-			set salida to salida & "\n" & tarea
-		end repeat
-
-	else if comando is equal to cmdSET then
-
-		tell application "Reminders"
-			
-			set ListaaMostrar to lista
 			set listReminders to ""
-			set listReminders to reminders in list ListaaMostrar whose completed is false
+			set listReminders to reminders in list nombre_lista whose completed is false
 
 			if (count of listReminders) > 0 then
-				set numeroTarea to 0
+				set numero_recordatorio to 0
 				repeat with itemNum from 1 to (count of listReminders)
-					set numeroTarea to (numeroTarea + 1)
-					#set salida to salida & numeroTarea & "=" & dato	& ":" & (numeroTarea as string is equal to dato) & " "
-					if numeroTarea as string is equal to dato then 
+					set numero_recordatorio to (numero_recordatorio + 1)
+					if num_recordatorio is equal to (numero_recordatorio as string) then
 						tell item itemNum of listReminders 
-
-							if dato2 is equal to "body" or dato2 is equal to "note" then 
-								set body to dato3
-							end if 
-							
-							if dato2 is equal to "name" then 
-								set name to dato3
-							end if
-
-
-							set salida to salida & itemNum & ": [" & ListaaMostrar & "] " & name
-							set salida to salida & " --applied: " & dato2 & "=" & body
+							set completed to true
+							set nombre_tarea to name
+							set salida to "[" & nombre_lista & "] " & nombre_tarea & " ✔  " 
+							exit repeat
 						end tell
-						exit repeat
 					end if
-
 				end repeat
 			else 
-				set salida to salida & "No hay pendientes registrados"
+				set salida to "No hay pendientes registrados"
 			end if
 
 		end tell
 
-	else 
+		if (item 2 of argv) is equal to "completecal" then 
 
-		set salida to "Command: " & comando & " not found, use me in this way:\n\n" & lineacomando
+			tell application "Calendar"
+
+				set description_calendar to (item 4 of argv)
+				set idCalendario to (first calendar whose description is description_calendar)
+				set idEvento to make new event at end of events of idCalendario	
+				tell idEvento
+					set summary to nombre_tarea 
+					set allday event to true
+				end tell
+
+			end tell	
+			set salida to salida & " -- synced to calendar"
+		end if 	
 	
-	end if 
+
+	
+	# COMMAND: MOVE ##################################################################
+	else if (item 1 of argv) is equal to "move" then
+		
+		set nombre_lista_origen to (item 2 of argv)
+		set numero_tarea_origen to (item 3 of argv)
+		set nombre_lista_destino to (item 4 of argv)
+		set posicion_tarea_destino to (item 5 of argv)
+		set tarea_name to ""
+		set tarea_rdate to ""
+		set tarea_body to ""
+
+
+		tell application "Reminders"
+
+
+
+			# getting tarea in the origin and removing			
+			set listReminders to ""
+			set listReminders to reminders in list nombre_lista_origen whose completed is false
+
+			set numero_tarea to 0
+			repeat with itemNum from 1 to (count of listReminders)
+				set numero_tarea to (numero_tarea+1)
+				if ((numero_tarea as string) is equal to (numero_tarea_origen as string)) then  
+					
+					set tarea_name to name of (item itemNum of listReminders)
+
+
+					if (remind me date of (item itemNum of listReminders)) is missing value then 
+						set tarea_rdate to ""
+					else 
+						set tarea_rdate to (remind me date of (item itemNum of listReminders))
+					end if
+
+
+					if (body of (item itemNum of listReminders)) is missing value then 
+						set tarea_body to ""
+					else 
+						set tarea_body to (body of (item itemNum of listReminders))
+					end if
+
+
+					exit repeat
+
+				end if
+			end repeat
+	
+
+			delete every reminder in list nombre_lista_origen whose name is tarea_name
+
+
+			# adding to destiny list
+			set allEvents to reminders in list nombre_lista_destino whose completed is false
+			#set newEvents to {}
+			set newEvents_name to {}
+			set newEvents_rdate to {}
+			set newEvents_body to {}
+			set posicion_tarea to 0
+			set entre to false
+			repeat with itemEvent in allEvents
+
+				set posicion_tarea to (posicion_tarea + 1)	
+
+				if ((posicion_tarea as string) is equal to (posicion_tarea_destino as string)) then 
+					set entre to true
+					set end of newEvents_name to tarea_name
+					set end of newEvents_rdate to tarea_rdate
+					set end of newEvents_body to tarea_body
+				end if
+				
+				set end of newEvents_name to (name of itemEvent)
+				
+				if (remind me date of itemEvent) is missing value then 
+					set end of newEvents_rdate to ""
+				else 
+					set end of newEvents_rdate to (remind me date of itemEvent)
+				end if
+
+				if (body of itemEvent) is missing value then 
+					set end of newEvents_body to ""
+				else 
+					set end of newEvents_body to (body of itemEvent)
+				end if
+				
+					
+			end repeat
 			
+			if not entre then 
+				# In case the position desire is not found so add to end
+				set end of newEvents_name to tarea_name
+				set end of newEvents_rdate to tarea_rdate
+				set end of newEvents_body to tarea_body
+			end if 
+
+
+			delete every reminder in list nombre_lista_destino whose completed is false
+
+
+			repeat with itemNum from 1 to (count of newEvents_name)
+
+				set sname to (item itemNum of newEvents_name)
+				set srdate to (item itemNum of newEvents_rdate) 
+				set sbody to (item itemNum of newEvents_body)
+
+				set new_reminder to make new reminder in list nombre_lista_destino 
+		
+				tell new_reminder	
+					set name to sname
+					if srdate is not equal to "" then set remind me date to srdate
+					if sbody is not equal to "" then set body to sbody
+				end tell
+
+				delay 0.8
+
+			end repeat
+
+			#set salida to salida & (tarea_name)
+			#set salida to salida & " -- moved to [" & nombre_lista_destino & ":" & posicion_tarea_destino & "]" 
+
+		
+		end tell	
+
+		set salida to flista(nombre_lista_destino)
+	
+	end if
 
 
 	tell application "Terminal"
-		set output to salida & "\n" & mensaje & "\n"
+		set output to salida 
 	end tell 
 
+ 
 end
 END
 
