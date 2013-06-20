@@ -21,6 +21,7 @@ The command can be:
 - completelastcal
 - complete [word that task contain]
 - completecal [word that task contain] 
+- modify
 - next
 - body [word that task contain in field note]
 - set [name of list] [number of task] [field] [this information will add to task]

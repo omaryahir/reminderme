@@ -43,13 +43,18 @@ on simple_sort(my_list)
 end simple_sort
 
 
-on flista(nombre_lista)
+on flista(nombre_lista,consulta)
 
 	tell application "Reminders"
 			
-		set salida to "\n"	
+		set salida to "\n¡ Me siento bien, mi salud es genial ! \n [Tiempo = Vida]  [" & current date & "]\n\n"	
 		set listReminders to ""
-		set listReminders to reminders in list nombre_lista whose completed is false
+
+		if consulta is not equal to "" then
+			set listReminders to reminders in list nombre_lista whose completed is false and name contain consulta
+		else	
+			set listReminders to reminders in list nombre_lista whose completed is false
+		end if
 
 		if (count of listReminders) > 0 then
 			repeat with itemNum from 1 to (count of listReminders)
@@ -63,7 +68,8 @@ on flista(nombre_lista)
 
 	end tell
 
-	return (salida & "\nDo it Simple !  " & current date & "\n")
+	return salida
+	#return salida & "\nDo it Simple !  " & current date & "\n")
 
 end flista
 
@@ -92,12 +98,30 @@ on run argv
 		end tell
 
 
+	# COMMAND: LISTSAY #################################################################
+
+	else if (item 2 of argv) is equal to "listsay" then
+
+		set consulta to ""
+		if (count of argv) >= 3 then
+			set consulta to (item 3 of argv)
+		end if
+
+		set salida to flista((item 1 of argv),consulta)
+		say salida
+
+
 
 	# COMMAND: LIST #################################################################
 
 	else if (item 2 of argv) is equal to "list" then
 
-		set salida to flista((item 1 of argv))
+		set consulta to ""
+		if (count of argv) >= 3 then
+			set consulta to (item 3 of argv)
+		end if
+
+		set salida to flista((item 1 of argv),consulta)
 
 
 	# COMMAND: NEW #################################################################
@@ -293,8 +317,44 @@ on run argv
 		
 		end tell	
 
-		set salida to flista(nombre_lista_destino)
-	
+		set salida to flista(nombre_lista_destino,"")
+
+	# COMMAND: MODIFY ######################################################
+
+	else if (item 2 of argv) contain "modify" then
+
+		set nombre_lista to (item 1 of argv)	
+		set num_recordatorio to (item 3 of argv)
+		set new_text to ""
+		repeat with argNum from 4 to (count of argv)
+			set new_text to new_text & (item argNum of argv) & " "
+		end repeat
+
+
+
+		tell application "Reminders"
+			
+			set listReminders to ""
+			set listReminders to reminders in list nombre_lista whose completed is false
+
+			if (count of listReminders) > 0 then
+				set numero_recordatorio to 0
+				repeat with itemNum from 1 to (count of listReminders)
+					set numero_recordatorio to (numero_recordatorio + 1)
+					if num_recordatorio is equal to (numero_recordatorio as string) then
+						tell item itemNum of listReminders
+							set name to new_text 
+							set salida to "task changed!"
+							exit repeat
+						end tell
+					end if
+				end repeat
+			else 
+				set salida to "No hay pendientes registrados"
+			end if
+
+		end tell
+
 	end if
 
 

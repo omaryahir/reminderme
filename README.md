@@ -47,6 +47,15 @@ If you use the completecal so the task will be copy in your Calendar.App in the 
 This will move the [number of task] from the [origin list] to [destiny list] in the [position] that you
 specified. (PRECAUTION: This command only copy name, body and remind me date fields)
 
+
+####modify
+	
+	$ ./task.sh [name of list] modify [number of task] "[new text]"
+
+This will modify the text of the task in the list specified.
+
+
+
 ---
 
 I hope this will help you.
