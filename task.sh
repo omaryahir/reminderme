@@ -120,6 +120,8 @@ on run argv
 		if (count of argv) >= 3 then
 			set consulta to (item 3 of argv)
 		end if
+		
+		tell application "System Events" to tell process "Terminal" to keystroke "k" using command down
 
 		set salida to flista((item 1 of argv),consulta)
 
