@@ -51,7 +51,7 @@ on flista(nombre_lista,consulta)
 		set listReminders to ""
 
 		if consulta is not equal to "" then
-			set listReminders to reminders in list nombre_lista whose completed is false and name contain consulta
+			set listReminders to reminders in list nombre_lista whose completed is false and name contains consulta
 		else	
 			set listReminders to reminders in list nombre_lista whose completed is false
 		end if
@@ -59,7 +59,12 @@ on flista(nombre_lista,consulta)
 		if (count of listReminders) > 0 then
 			repeat with itemNum from 1 to (count of listReminders)
 				tell item itemNum of listReminders 
-					set salida to salida & itemNum & ": " & name & "\n"
+					set salida to salida & "\n[" & itemNum & "] " & name 
+					if body is not null and body is not "" then 
+							set salida to salida & "\n--------------------\n"
+							set salida to salida & "" & body
+							set salida to salida & "\n--------------------\n"
+					end if
 				end tell
 			end repeat
 		else 
@@ -120,8 +125,9 @@ on run argv
 		if (count of argv) >= 3 then
 			set consulta to (item 3 of argv)
 		end if
-		
-		tell application "System Events" to tell process "Terminal" to keystroke "k" using command down
+	
+		# limpiar pantalla:	
+		#tell application "System Events" to tell process "Terminal" to keystroke "k" using command down
 
 		set salida to flista((item 1 of argv),consulta)
 
