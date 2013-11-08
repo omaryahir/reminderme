@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+clear
 osascript - $1 $2 $3 $4 $5 <<END
 
 
@@ -50,8 +51,16 @@ on flista(nombre_lista,consulta)
 		set salida to "\n¡ Me siento bien, mi salud es genial ! \n [Tiempo = Vida]  [" & current date & "]\n\n"	
 		set listReminders to ""
 
+		set mostrar_cuerpo_tarea to false
 		if consulta is not equal to "" then
-			set listReminders to reminders in list nombre_lista whose completed is false and name contains consulta
+			if consulta contains "n:" then
+				set numero_a_mostrar to item 3 of consulta
+				set listReminders to reminders in list nombre_lista whose completed is false
+				set mostrar_cuerpo_tarea to true
+				#set salida to salida & "\n Mostrando tarea:-" & numero_a_mostrar & "-\n\n\n"
+			else  
+				set listReminders to reminders in list nombre_lista whose completed is false and name contains consulta
+			end if
 		else	
 			set listReminders to reminders in list nombre_lista whose completed is false
 		end if
@@ -59,11 +68,18 @@ on flista(nombre_lista,consulta)
 		if (count of listReminders) > 0 then
 			repeat with itemNum from 1 to (count of listReminders)
 				tell item itemNum of listReminders 
-					set salida to salida & "\n[" & itemNum & "] " & name 
-					if body is not null and body is not "" then 
-							set salida to salida & "\n--------------------\n"
-							set salida to salida & "" & body
-							set salida to salida & "\n--------------------\n"
+					if mostrar_cuerpo_tarea then 
+						if ("" & itemNum & "") is equal to numero_a_mostrar then 
+							set salida to salida & "[" & itemNum & "] "
+							set salida to salida & name & "\n"
+							if mostrar_cuerpo_tarea and body is not null and body is not "" then 
+								set salida to salida & "\nDetalles:\n"
+								set salida to salida & "" & body
+								set salida to salida & "\n"
+							end if
+						end if
+					else	
+						set salida to salida & "[" & itemNum & "] " & name & "\n"
 					end if
 				end tell
 			end repeat
@@ -146,7 +162,7 @@ on run argv
 		tell application "Reminders"
 			tell list nombre_lista
 				if nombre_tarea is not equal to "" then				
-					make new reminder with properties {name:nombre_tarea}	
+					make new reminder with properties {name:nombre_tarea,body:""}	
 					set salida to "[" & nombre_lista & "] " & nombre_tarea & " << added"
 				end if
 			end tell 
