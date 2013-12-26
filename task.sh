@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-clear
+#clear
 osascript - $1 $2 $3 $4 $5 <<END
 
 
@@ -70,7 +70,11 @@ on flista(nombre_lista,consulta)
 				tell item itemNum of listReminders 
 					if mostrar_cuerpo_tarea then 
 						if ("" & itemNum & "") is equal to numero_a_mostrar then 
-							set salida to salida & "[" & itemNum & "] "
+							if itemNum is less than 10 then 
+								set salida to salida & "[0" & itemNum & "] "
+							else 
+								set salida to salida & "[" & itemNum & "] "
+							end if 
 							set salida to salida & name & "\n"
 							if mostrar_cuerpo_tarea and body is not null and body is not "" then 
 								set salida to salida & "\nDetalles:\n"
@@ -78,8 +82,12 @@ on flista(nombre_lista,consulta)
 								set salida to salida & "\n"
 							end if
 						end if
-					else	
-						set salida to salida & "[" & itemNum & "] " & name & "\n"
+					else
+						if itemNum is less than 10 then
+							set salida to salida & "[0" & itemNum & "] " & name & "\n"
+						else 
+							set salida to salida & "[" & itemNum & "] " & name & "\n"
+						end if
 					end if
 				end tell
 			end repeat
@@ -106,11 +114,15 @@ on run argv
 	# GLOBALS   #####################################################################
 	set salida to ""
 
+	# COMMAND: HELP ##################################################################
 
+	if (item 1 of argv) is equal to "help" then
 
+		set salida to salida & "check README.md file in the folder please... this help is comming"
+		
 	# COMMAND: ALL ##################################################################
 
-	if (item 1 of argv) is equal to "all" then
+	else if (item 1 of argv) is equal to "all" then
 		tell application "Reminders"
 			repeat with listNum from 1 to (count of lists)
 				set nombre_lista to (name of (list listNum))
@@ -146,6 +158,30 @@ on run argv
 		#tell application "System Events" to tell process "Terminal" to keystroke "k" using command down
 
 		set salida to flista((item 1 of argv),consulta)
+
+
+
+	# COMMAND: CALENDAR NEW #########################################################
+	# task calendar new calendariohm "Mi evento"
+	else if (item 1 of argv) is equal to "calendar" and (item 2 of argv) is equal to "new" then
+
+			tell application "Calendar"
+
+				set nombre_tarea to ""
+				repeat with argNum from 4 to (count of argv)
+					set nombre_tarea to nombre_tarea & (item argNum of argv) & " "
+				end repeat
+
+				set description_calendar to (item 3 of argv)
+				set idCalendario to (first calendar whose description is description_calendar)
+				set idEvento to make new event at end of events of idCalendario	
+				tell idEvento
+					set summary to nombre_tarea 
+					set allday event to true
+				end tell
+
+			end tell	
+			set salida to " >> added to calendar"
 
 
 	# COMMAND: NEW #################################################################
