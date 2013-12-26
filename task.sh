@@ -48,7 +48,7 @@ on flista(nombre_lista,consulta)
 
 	tell application "Reminders"
 			
-		set salida to "\n¡ Me siento bien, mi salud es genial ! \n [Tiempo = Vida]  [" & current date & "]\n\n"	
+		set salida to "\n¡ Me siento bien, mi salud es genial !  --- Tengo tiempo libre :) \n iPad:mysql | MPro:Chrome/Terminal/TweetDeck/Win | " & current date & "\n\n"	
 		set listReminders to ""
 
 		set mostrar_cuerpo_tarea to false
