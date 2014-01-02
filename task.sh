@@ -48,7 +48,7 @@ on flista(nombre_lista,consulta)
 
 	tell application "Reminders"
 			
-		set salida to "\n¡ Me siento bien, mi salud es genial ! \n [Tiempo = Vida]  [" & current date & "]\n\n"	
+		set salida to "\n¡ Me siento bien, mi salud es genial, organizo excelentemente mi tiempo ! \n [Tiempo = Vida]  [" & current date & "]\n\n"	
 		set listReminders to ""
 
 		set mostrar_cuerpo_tarea to false
@@ -57,7 +57,7 @@ on flista(nombre_lista,consulta)
 				set numero_a_mostrar to item 3 of consulta
 				set listReminders to reminders in list nombre_lista whose completed is false
 				set mostrar_cuerpo_tarea to true
-				#set salida to salida & "\n Mostrando tarea:-" & numero_a_mostrar & "-\n\n\n"
+				#set salida to salida & "\nMostrando tarea: # " & numero_a_mostrar & " \n"
 			else  
 				set listReminders to reminders in list nombre_lista whose completed is false and name contains consulta
 			end if
@@ -67,13 +67,18 @@ on flista(nombre_lista,consulta)
 
 		if (count of listReminders) > 0 then
 			repeat with itemNum from 1 to (count of listReminders)
+
+				if itemNum is equal to (count of listReminders) then
+					set salida to salida & "\n Φ EN PROCESO: "
+				end if 
+
 				tell item itemNum of listReminders 
 					if mostrar_cuerpo_tarea then 
 						if ("" & itemNum & "") is equal to numero_a_mostrar then 
 							if itemNum is less than 10 then 
-								set salida to salida & "[0" & itemNum & "] "
+								set salida to salida & " #0" & itemNum & " "
 							else 
-								set salida to salida & "[" & itemNum & "] "
+								set salida to salida & " #" & itemNum & " "
 							end if 
 							set salida to salida & name & "\n"
 							if mostrar_cuerpo_tarea and body is not null and body is not "" then 
@@ -84,9 +89,9 @@ on flista(nombre_lista,consulta)
 						end if
 					else
 						if itemNum is less than 10 then
-							set salida to salida & "[0" & itemNum & "] " & name & "\n"
+							set salida to salida & " #0" & itemNum & " " & name & "\n"
 						else 
-							set salida to salida & "[" & itemNum & "] " & name & "\n"
+							set salida to salida & " #" & itemNum & " " & name & "\n"
 						end if
 					end if
 				end tell

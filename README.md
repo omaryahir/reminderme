@@ -49,7 +49,7 @@ This will modify the text of the task in the list specified.
 
 ####calendar
 
-$ ./task.sh calendar [name of calendar] new "[name of the task]"
+$ ./task.sh calendar new [name of calendar] "[name of the task]"
 
 This command will add in your Calendar.App in the [name of calendar] the task specified in [name of the task].
 
