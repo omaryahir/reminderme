@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#clear
+clear
 osascript - $1 $2 $3 $4 $5 <<END
 
 
@@ -69,16 +69,18 @@ on flista(nombre_lista,consulta)
 			repeat with itemNum from 1 to (count of listReminders)
 
 				if itemNum is equal to (count of listReminders) then
-					set salida to salida & "\n Φ EN PROCESO: "
+					set salida to salida & ">>> "
+				else 
+					set salida to salida & "    "
 				end if 
 
 				tell item itemNum of listReminders 
 					if mostrar_cuerpo_tarea then 
 						if ("" & itemNum & "") is equal to numero_a_mostrar then 
 							if itemNum is less than 10 then 
-								set salida to salida & " #0" & itemNum & " "
+								set salida to salida & "0" & itemNum & ": "
 							else 
-								set salida to salida & " #" & itemNum & " "
+								set salida to salida & itemNum & ": "
 							end if 
 							set salida to salida & name & "\n"
 							if mostrar_cuerpo_tarea and body is not null and body is not "" then 
@@ -89,9 +91,9 @@ on flista(nombre_lista,consulta)
 						end if
 					else
 						if itemNum is less than 10 then
-							set salida to salida & " #0" & itemNum & " " & name & "\n"
+							set salida to salida & "0" & itemNum & " " & name & "\n"
 						else 
-							set salida to salida & " #" & itemNum & " " & name & "\n"
+							set salida to salida & itemNum & " " & name & "\n"
 						end if
 					end if
 				end tell
