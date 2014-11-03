@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-clear
+#/usr/bin/env bash
+#clear
 osascript - $1 $2 $3 $4 $5 <<END
 
 
