@@ -1,6 +1,6 @@
 #/usr/bin/env bash
 clear
-echo "\n\033[37m $1 $2 $3 $4 $5 \n ····\n \033[33m " #\nTiempo = Vida | Tareas:\n..."
+echo "\n\033[37m $1 $2 $3 $4 $5 \n \033[30;1m····\n \033[34m " #\nTiempo = Vida | Tareas:\n..."
 osascript - $1 $2 $3 $4 $5 <<END
 
 
