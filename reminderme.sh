@@ -1,6 +1,6 @@
 #/usr/bin/env bash
 #clear
-echo "Conectando ..."
+echo "Loading...\n \033[33m " #\nTiempo = Vida | Tareas:\n..."
 osascript - $1 $2 $3 $4 $5 <<END
 
 
@@ -49,7 +49,7 @@ on flista(nombre_lista,consulta)
 
 	tell application "Reminders"
 			
-		set salida to "\n¡ Me siento bien, mi salud es genial, organizo excelentemente mi tiempo ! \n [Tiempo = Vida]  [" & current date & "]\n\n"	
+		set salida to ""
 		set listReminders to ""
 
 		set mostrar_cuerpo_tarea to false
@@ -427,6 +427,7 @@ on run argv
 
 
 	tell application "Terminal"
+		#set textColor to {-9787, -9787, -9787}
 		set output to salida 
 	end tell 
 
