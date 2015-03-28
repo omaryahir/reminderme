@@ -1,6 +1,6 @@
 #/usr/bin/env bash
 #clear
-echo "Loading...\n \033[33m " #\nTiempo = Vida | Tareas:\n..."
+echo "\n\033[37m $1 $2 $3 $4 $5 \n _________________\n \033[33m " #\nTiempo = Vida | Tareas:\n..."
 osascript - $1 $2 $3 $4 $5 <<END
 
 
