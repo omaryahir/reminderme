@@ -119,16 +119,22 @@ end flista
 
 on run argv
 
-	# GLOBALS   #####################################################################
+	# GLOBALS   #######################################################################
 	set salida to ""
 
-	# COMMAND: HELP ##################################################################
+	# IF NOT COMMAND THE DEFAULT COMMAND IS LIST ######################################
+	if (count of argv) = 1 then 
+		set end of argv to "list"
+	end if 
+
+
+	# COMMAND: HELP ###################################################################
 
 	if (item 1 of argv) is equal to "help" then
 
 		set salida to salida & "check README.md file in the folder please... this help is comming"
 		
-	# COMMAND: ALL ##################################################################
+	# COMMAND: ALL ####################################################################
 
 	else if (item 1 of argv) is equal to "all" then
 		tell application "Reminders"
