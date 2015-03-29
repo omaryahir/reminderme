@@ -1,6 +1,6 @@
 #/usr/bin/env bash
 clear
-echo "\n\033[37m $1 $2 $3 $4 $5 \n \033[30;1m····\n \033[34m " #\nTiempo = Vida | Tareas:\n..."
+echo "\n\033[34m $1 $2 $3 $4 $5 \n \033[30;1m····\n \033[33m " #\nTiempo = Vida | Tareas:\n..."
 osascript - $1 $2 $3 $4 $5 <<END
 
 
@@ -137,12 +137,25 @@ on run argv
 	# COMMAND: ALL ####################################################################
 
 	else if (item 1 of argv) is equal to "all" then
+
+		set nombres_listas to {"", "", "", "", "", "", "", "", "", "", ""}
+		set num to 1
 		tell application "Reminders"
 			repeat with listNum from 1 to (count of lists)
 				set nombre_lista to (name of (list listNum))
-				set salida to salida & "[" & nombre_lista & "]\n"	
+				set item num of nombres_listas to nombre_lista
+				set num to num + 1 
+				##set salida to salida & "[" & nombre_lista & "]\n"	
 			end repeat
 		end tell
+
+		repeat with num_item from 1 to (num-1)
+			set nombre_lista to item num_item of nombres_listas 
+			set salida to salida & "[" & nombre_lista & "]\n"
+			if (item 2 of argv) is equal to "show" then 
+				set salida to salida & "\n" & flista(nombre_lista, "") & "\n"
+			end if 
+		end repeat 
 
 
 	# COMMAND: LISTSAY #################################################################
@@ -433,39 +446,63 @@ on run argv
 
 	end if
 
+	tell application "Terminal"
+		set output to salida
+	end tell
+	
 
-	(*
+
+	(*	
 	# Separando la tarea final
-	if salida contain ">>>" then
+	if salida contain ">>>" then	
 		
 		set pos_last_task to (offset of ">>>" in salida) - 1
 
 		set task to text 1 thru pos_last_task of salida
-
-		tell application "Terminal"
-				set output to task
-				#do shell script " echo \" " & task & " \""
-				#do shell script " echo \" " & salida & " \""
-		end tell
-
 		set last_task to text pos_last_task thru ((length of salida)-1) of salida
 
+		tell application "Terminal"
+			set output to task
+			set output to output & last_task & "\n"			
+		end tell
+
 		#tell application "Terminal"
-		#		do shell script " echo  " & salida & " \" " & character id 92 & "033[30m " & last_task & " \""
+				#do shell script " echo \" " & character id 92 & "033[33m hey  \" \n "
+				#do shell script " echo \" " & character id 92 & "033[33m hey2  \" \n "
+				#set output to output & character id 92 & "033[33m" & last_task & "\n"
+				#do shell script " echo \" " & salida & " \""
+				#do shell script " echo \"  " & salida & character id 92 & "n " & character id 92 & "033[33m " & last_task & " \""
+				#do shell script " echo \"  " & salida & " \" "
+				#say "va"
+				#do shell script " echo \"  " & character id 92 & "n " & character id 92 & "033[33m " & last_task & character id 92 & "n \""
+				#copy output to stdout  
+		#end tell
+
+		#do shell script " echo " & quoted form of salida
+
+
+		#tell application "Terminal"
+			#set stdout to stdout & " ok"
+			#set textColor to {40000,20000,50000}
+		#end tell
+
+		#tell application "Terminal"
+			#set output to output & last_task & "\n"
+			#do shell script " echo \"  " & character id 92 & "n " & character id 92 & "033[33m " & last_task & character id 92 & "n \""
 		#end tell
 
 	else 
-		tell application "Terminal"
+			tell application "Terminal"
 			set output to salida
 		end tell
 	end if
-	*)
+	*)	
 
 
-	tell application "Terminal"
+	#tell application "Terminal"
 		#set textColor to {-9787, -9787, -9787}
-		set output to salida 
-	end tell 
+		#set output to salida 
+	#end tell 
 
  
 end
