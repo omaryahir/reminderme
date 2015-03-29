@@ -433,6 +433,8 @@ on run argv
 
 	end if
 
+
+	(*
 	# Separando la tarea final
 	if salida contain ">>>" then
 		
@@ -440,30 +442,30 @@ on run argv
 
 		set task to text 1 thru pos_last_task of salida
 
-		#tell application "Terminal"
-				#set output to salida
+		tell application "Terminal"
+				set output to task
 				#do shell script " echo \" " & task & " \""
 				#do shell script " echo \" " & salida & " \""
-		#end tell
+		end tell
 
 		set last_task to text pos_last_task thru ((length of salida)-1) of salida
 
-		tell application "Terminal"
-				do shell script " echo \" " & salida & " " & character id 92 & "033[30m " & last_task & " \""
-		end tell
+		#tell application "Terminal"
+		#		do shell script " echo  " & salida & " \" " & character id 92 & "033[30m " & last_task & " \""
+		#end tell
 
 	else 
 		tell application "Terminal"
 			set output to salida
 		end tell
 	end if
+	*)
 
 
-
-	#tell application "Terminal"
+	tell application "Terminal"
 		#set textColor to {-9787, -9787, -9787}
-		#set output to salida 
-	#end tell 
+		set output to salida 
+	end tell 
 
  
 end
