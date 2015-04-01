@@ -69,7 +69,8 @@ on flista(nombre_lista,consulta)
 		if (count of listReminders) > 0 then
 			repeat with itemNum from 1 to (count of listReminders)
 
-				if itemNum is equal to (count of listReminders) then
+				#if itemNum is equal to (count of listReminders) then
+				if itemNum is equal to 1 then
 					set salida to salida & ">>> "
 				else 
 					set salida to salida & "    "
