@@ -1,5 +1,5 @@
 #/usr/bin/env bash
-clear
+#clear
 echo "\n\033[34m $1 $2 $3 $4 $5 \n \033[30;1m····\n \033[33m " #\nTiempo = Vida | Tareas:\n..."
 osascript - $1 $2 $3 $4 $5 <<END
 
@@ -71,9 +71,9 @@ on flista(nombre_lista,consulta)
 
 				#if itemNum is equal to (count of listReminders) then
 				if itemNum is equal to 1 then
-					set salida to salida & ">>> "
+					set salida to salida & ""
 				else 
-					set salida to salida & "    "
+					set salida to salida & " "
 				end if 
 
 				tell item itemNum of listReminders 
@@ -455,9 +455,9 @@ on run argv
 
 	(*	
 	# Separando la tarea final
-	if salida contain ">>>" then	
+	if salida contain "" then	
 		
-		set pos_last_task to (offset of ">>>" in salida) - 1
+		set pos_last_task to (offset of "" in salida) - 1
 
 		set task to text 1 thru pos_last_task of salida
 		set last_task to text pos_last_task thru ((length of salida)-1) of salida
