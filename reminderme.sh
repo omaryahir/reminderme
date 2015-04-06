@@ -71,9 +71,9 @@ on flista(nombre_lista,consulta)
 
 				#if itemNum is equal to (count of listReminders) then
 				if itemNum is equal to 1 then
-					set salida to salida & ""
+					set salida to salida & " "
 				else 
-					set salida to salida & " "
+					set salida to salida & "  "
 				end if 
 
 				tell item itemNum of listReminders 
