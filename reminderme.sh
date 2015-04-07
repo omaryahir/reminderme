@@ -69,14 +69,15 @@ on flista(nombre_lista,consulta)
 		if (count of listReminders) > 0 then
 			repeat with itemNum from 1 to (count of listReminders)
 
-				#if itemNum is equal to (count of listReminders) then
-				if itemNum is equal to 1 then
-					set salida to salida & " "
-				else 
-					set salida to salida & "  "
-				end if 
 
 				tell item itemNum of listReminders 
+
+					if name contain "[D]" then
+						set salida to salida & " "
+					else 
+						set salida to salida & "  "
+					end if 
+
 					if mostrar_cuerpo_tarea then 
 						if ("" & itemNum & "") is equal to numero_a_mostrar then 
 							if itemNum is less than 10 then 
@@ -434,7 +435,7 @@ on run argv
 					if num_recordatorio is equal to (numero_recordatorio as string) then
 						tell item itemNum of listReminders
 							set name to new_text 
-							set salida to "task changed!"
+							set salida to "task changed !"
 							exit repeat
 						end tell
 					end if
@@ -444,6 +445,43 @@ on run argv
 			end if
 
 		end tell
+
+	# COMMAND: MARK ######################################################
+
+	else if (item 2 of argv) contain "mark" then
+
+		set nombre_lista to (item 1 of argv)	
+		set num_recordatorio to (item 3 of argv)
+	
+		tell application "Reminders"
+			
+			set listReminders to ""
+			set listReminders to reminders in list nombre_lista whose completed is false
+
+			if (count of listReminders) > 0 then
+				set numero_recordatorio to 0
+				repeat with itemNum from 1 to (count of listReminders)
+					set numero_recordatorio to (numero_recordatorio + 1)
+					tell item itemNum of listReminders					
+						if num_recordatorio is equal to (numero_recordatorio as string) then	
+							if not name contain "[D]"	then		
+								set name to name & "[D]"
+							end if
+						else if name contain "[D]" then
+							set name_temp to name
+							set pos_d to (offset of "[D]" in name_temp) - 1
+							set name_temp to text 1 thru pos_d of name_temp
+							set name to name_temp
+						end if
+					end tell				
+				end repeat
+				#set salida to "task marked ! \n"
+			else 
+				set salida to "No hay pendientes registrados"
+			end if
+
+		end tell
+		set salida to flista(nombre_lista,"")
 
 	end if
 
