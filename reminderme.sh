@@ -435,7 +435,7 @@ on run argv
 					if num_recordatorio is equal to (numero_recordatorio as string) then
 						tell item itemNum of listReminders
 							set name to new_text 
-							set salida to "[" & name & "] task changed !"
+							set salida to name & " task changed !"
 							exit repeat
 						end tell
 					end if
