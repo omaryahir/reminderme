@@ -256,8 +256,8 @@ on run argv
 						tell item itemNum of listReminders 
 							set completed to true
 							set nombre_tarea to name
-							#set salida to "[" & nombre_lista & "] " & nombre_tarea & " ✔  " 
-							set salida to " >> completed ✔  " 
+							set salida to "[" & nombre_lista & "] " & nombre_tarea & " ✔  " 
+							#set salida to " >> completed ✔  " 
 							exit repeat
 						end tell
 					end if
@@ -435,7 +435,7 @@ on run argv
 					if num_recordatorio is equal to (numero_recordatorio as string) then
 						tell item itemNum of listReminders
 							set name to new_text 
-							set salida to "task changed !"
+							set salida to "[" & name & "] task changed !"
 							exit repeat
 						end tell
 					end if
@@ -452,7 +452,7 @@ on run argv
 
 		set nombre_lista to (item 1 of argv)	
 		set num_recordatorio to (item 3 of argv)
-	
+
 		tell application "Reminders"
 			
 			set listReminders to ""
