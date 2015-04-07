@@ -49,6 +49,11 @@ $ ./reminderme.sh [name of list] modify [number of task] "[new text]"
 
 This will modify the text of the task in the list specified.
 
+####mark
+	
+$ ./reminderme.sh [name of list] mark [number of task]
+
+This will mark with > (and add text [D] that's means doing) in the task of the list specified.
 
 ####calendar
 
