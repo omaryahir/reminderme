@@ -1,0 +1,13 @@
+#/usr/bin/env bash
+echo "29 \033[29m hola \033[33m"
+echo "1;30 \033[1;30m hola \033[33m"
+echo "31 \033[31m hola \033[33m \033[5m Blink \033[0m "
+echo "32 \033[32m hola \033[33m"
+echo "33 \033[33m hola \033[33m"
+echo "34 \033[34m hola \033[33m"
+echo "35 \033[35m hola \033[33m"
+echo "36 \033[36m hola \033[33m"
+echo "37 \033[37m hola \033[33m"
+echo "38 \033[38m hola \033[33m"
+echo "39 \033[38m hola \033[33m"
+echo "40 \033[40m hola \033[33m"

@@ -1,6 +1,7 @@
 #/usr/bin/env bash
 #clear
-echo "\n\033[34m $1 $2 $3 $4 $5 \n \033[30;1m····\n \033[33m " #\nTiempo = Vida | Tareas:\n..."
+#echo "\n\033[34m $1 $2 $3 $4 $5 \n \033[30;1m····\n \033[33m " #\nTiempo = Vida | Tareas:\n..."
+echo "\033[29m  $1 $2 $3 $4 $5 \033[33m " #\nTiempo = Vida | Tareas:\n..."
 osascript - $1 $2 $3 $4 $5 <<END
 
 
@@ -210,7 +211,7 @@ on run argv
 				end tell
 
 			end tell	
-			set salida to " >> added to calendar \n"
+			set salida to "  added to calendar !"
 
 
 	# COMMAND: NEW #################################################################
@@ -229,7 +230,7 @@ on run argv
 				if nombre_tarea is not equal to "" then				
 					make new reminder with properties {name:nombre_tarea,body:""}	
 					#set salida to "[" & nombre_lista & "] " & nombre_tarea & " << added"
-					set salida to " >> added \n"
+					set salida to "  added !"
 				end if
 			end tell 
 		end tell
@@ -257,7 +258,7 @@ on run argv
 							set completed to true
 							set nombre_tarea to name
 							set salida to "[" & nombre_lista & "] " & nombre_tarea & " ✔  " 
-							#set salida to " >> completed ✔  " 
+							#set salida to "  completed ✔  " 
 							exit repeat
 						end tell
 					end if
@@ -435,7 +436,7 @@ on run argv
 					if num_recordatorio is equal to (numero_recordatorio as string) then
 						tell item itemNum of listReminders
 							set name to new_text 
-							set salida to name & " task changed !"
+							set salida to name & " < task changed !"
 							exit repeat
 						end tell
 					end if
