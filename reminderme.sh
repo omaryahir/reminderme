@@ -1,7 +1,7 @@
 #/usr/bin/env bash
 #clear
 #echo "\n\033[34m $1 $2 $3 $4 $5 \n \033[30;1m····\n \033[33m " #\nTiempo = Vida | Tareas:\n..."
-echo "\033[1;31m  [$1] $2 $3 $4 $5 \033[33m " 
+echo "\033[33m  [$1] $2 $3 $4 $5 \033[30;1m " 
 osascript - $1 $2 $3 $4 $5 <<END
 
 
