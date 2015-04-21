@@ -74,7 +74,7 @@ on flista(nombre_lista,consulta)
 				tell item itemNum of listReminders 
 
 					if name contain "[D]" then
-						set salida to salida & " "
+						set salida to salida & "▸ "
 					else 
 						set salida to salida & "  "
 					end if 
