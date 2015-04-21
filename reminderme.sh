@@ -141,7 +141,7 @@ on run argv
 
 	else if (item 1 of argv) is equal to "all" then
 
-		set nombres_listas to {"", "", "", "", "", "", "", "", "", "", ""}
+		set nombres_listas to {"", "", "", "", "", "", "", "", "", "", "", "", "", ""}
 		set num to 1
 		tell application "Reminders"
 			repeat with listNum from 1 to (count of lists)
