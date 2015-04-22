@@ -156,7 +156,7 @@ on run argv
 
 		repeat with num_item from 1 to (num-1)
 			set nombre_lista to item num_item of nombres_listas 
-			set salida to salida & "[" & nombre_lista & "]\n"
+			set salida to salida & "  [" & nombre_lista & "]\n"
 			if (item 2 of argv) is equal to "show" then 
 				set salida to salida & "\n" & flista(nombre_lista, "") & "\n"
 			end if 
