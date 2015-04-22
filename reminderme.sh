@@ -54,6 +54,7 @@ on flista(nombre_lista,consulta)
 		set listReminders to ""
 
 		set mostrar_cuerpo_tarea to false
+		
 		if consulta is not equal to "" then
 			if consulta contains "n:" then
 				set numero_a_mostrar to item 3 of consulta
@@ -69,11 +70,12 @@ on flista(nombre_lista,consulta)
 
 		if (count of listReminders) > 0 then
 			repeat with itemNum from 1 to (count of listReminders)
-
-
 				tell item itemNum of listReminders 
 
-					if name contain "[D]" then
+					set nombretarea to "" & name & "" 
+
+
+					if nombretarea contain "[D]" then
 						set salida to salida & "▸ "
 					else 
 						set salida to salida & "  "
@@ -86,7 +88,7 @@ on flista(nombre_lista,consulta)
 							else 
 								set salida to salida & itemNum & ": "
 							end if 
-							set salida to salida & name & "\n"
+							set salida to salida & nombretarea & "\n"
 							if mostrar_cuerpo_tarea and body is not null and body is not "" then 
 								set salida to salida & "\nDetalles:\n"
 								set salida to salida & "" & body
@@ -95,9 +97,9 @@ on flista(nombre_lista,consulta)
 						end if
 					else
 						if itemNum is less than 10 then
-							set salida to salida & "0" & itemNum & " " & name & "\n"
+							set salida to salida & "0" & itemNum & " " & nombretarea & "\n"
 						else 
-							set salida to salida & itemNum & " " & name & "\n"
+							set salida to salida & itemNum & " " & nombretarea & "\n"
 						end if
 					end if
 				end tell
