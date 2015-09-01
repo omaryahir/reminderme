@@ -179,7 +179,7 @@ on run argv
 
 	# COMMAND: LIST #################################################################
 
-	else if (item 2 of argv) is equal to "list" then
+	else if (item 2 of argv) is equal to "list" or (item 2 of argv) is equal to "query" or (item 2 of argv) is equal to "filter" then
 
 		set consulta to ""
 		if (count of argv) >= 3 then
