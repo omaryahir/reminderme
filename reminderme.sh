@@ -415,7 +415,7 @@ on run argv
 
 	# COMMAND: MODIFY ######################################################
 
-	else if (item 2 of argv) contain "modify" then
+	else if (item 2 of argv) contain "modify" or (item 2 of argv) contain "edit" or (item 2 of argv) contain "change" then
 
 		set nombre_lista to (item 1 of argv)	
 		set num_recordatorio to (item 3 of argv)
