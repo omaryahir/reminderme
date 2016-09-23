@@ -66,6 +66,7 @@ on flista(nombre_lista,consulta)
 			end if
 		else	
 			set listReminders to reminders in list nombre_lista whose completed is false
+			#set listReminders to reminders in list nombre_lista
 		end if
 
 		if (count of listReminders) > 0 then
@@ -76,9 +77,9 @@ on flista(nombre_lista,consulta)
 
 
 					if nombretarea contain "[D]" then
-						set salida to salida & "▸ "
+						set salida to salida & "▸"
 					else 
-						set salida to salida & "  "
+						set salida to salida & " "
 					end if 
 
 					if mostrar_cuerpo_tarea then 
@@ -218,7 +219,7 @@ on run argv
 
 	# COMMAND: NEW #################################################################
 
-	else if (item 2 of argv) is equal to "new" then
+	else if (item 2 of argv) is equal to "new" or (item 2 of argv) is equal to "add" then
 		
 		set nombre_lista to (item 1 of argv)
 
